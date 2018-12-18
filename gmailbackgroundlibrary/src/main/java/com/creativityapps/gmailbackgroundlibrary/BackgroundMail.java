@@ -33,7 +33,6 @@ public class BackgroundMail {
     private String sendingMessageError;
     private boolean processVisibility = true;
     private ArrayList<String> attachments = new ArrayList<>();
-    private Context mContext;
     private OnSuccessCallback onSuccessCallback;
     private OnFailCallback onFailCallback;
 
@@ -48,19 +47,11 @@ public class BackgroundMail {
         void onFail();
     }
 
-    public BackgroundMail(Fragment fragment) {
-        this(fragment.getActivity().getApplicationContext());
-    }
+    public BackgroundMail() {
 
-    public BackgroundMail(Context context) {
-        this.mContext = context;
-        this.sendingMessage = context.getString(R.string.msg_sending_email);
-        this.sendingMessageSuccess = context.getString(R.string.msg_email_sent_successfully);
-        this.sendingMessageError=context.getString(R.string.msg_error_sending_email);
     }
 
     private BackgroundMail(Builder builder) {
-        mContext = builder.context;
         attachments = builder.attachments;
         username = builder.username;
         password = builder.password;
@@ -88,10 +79,6 @@ public class BackgroundMail {
         this.username = string;
     }
 
-    public void setGmailUserName(@StringRes int strRes) {
-        this.username = mContext.getResources().getString(strRes);
-    }
-
     @NonNull
     public String getGmailUserName() {
         return username;
@@ -101,10 +88,6 @@ public class BackgroundMail {
         this.password = string;
     }
 
-    public void setGmailPassword(@StringRes int strRes) {
-        this.password = mContext.getResources().getString(strRes);
-    }
-
     @NonNull
     public String getGmailPassword() {
         return password;
@@ -112,10 +95,6 @@ public class BackgroundMail {
 
     public void setType(@NonNull String string) {
         this.type = string;
-    }
-
-    public void setType(@StringRes int strRes) {
-        this.type = mContext.getResources().getString(strRes);
     }
 
     @NonNull
@@ -135,10 +114,6 @@ public class BackgroundMail {
         this.mailto = string;
     }
 
-    public void setMailTo(@StringRes int strRes) {
-        this.mailto = mContext.getResources().getString(strRes);
-    }
-
     @NonNull
     public String getMailTo() {
         return mailto;
@@ -146,10 +121,6 @@ public class BackgroundMail {
 
     public void setFormSubject(@NonNull String string) {
         this.subject = string;
-    }
-
-    public void setFormSubject(@StringRes int strRes) {
-        this.subject = mContext.getResources().getString(strRes);
     }
 
     @NonNull
@@ -161,10 +132,6 @@ public class BackgroundMail {
         this.body = string;
     }
 
-    public void setFormBody(@StringRes int strRes) {
-        this.body = mContext.getResources().getString(strRes);
-    }
-
     @NonNull
     public String getFormBody() {
         return body;
@@ -172,10 +139,6 @@ public class BackgroundMail {
 
     public void setSendingMessage(@NonNull String string) {
         this.sendingMessage = string;
-    }
-
-    public void setSendingMessage(@StringRes int strRes) {
-        this.sendingMessage = mContext.getResources().getString(strRes);
     }
 
     @NonNull
@@ -187,10 +150,6 @@ public class BackgroundMail {
         this.sendingMessageSuccess = string;
     }
 
-    public void setSendingMessageSuccess(@StringRes int strRes) {
-        this.sendingMessageSuccess = mContext.getResources().getString(strRes);
-    }
-
     @Nullable
     public String getSendingMessageSuccess() {
         return sendingMessageSuccess;
@@ -200,9 +159,6 @@ public class BackgroundMail {
         this.sendingMessageError = string;
     }
 
-    public void setSendingMessageError(@StringRes int strRes) {
-        this.sendingMessageError = mContext.getResources().getString(strRes);
-    }
 
     @Nullable
     public String getSeningMessageError() {
@@ -213,15 +169,11 @@ public class BackgroundMail {
         this.attachments.add(attachment);
     }
 
-    public void addAttachment(@StringRes int strRes) {
-        this.attachments.add(mContext.getResources().getString(strRes));
-    }
-
     public void addAttachments(@NonNull List<String> attachments) {
         this.attachments.addAll(attachments);
     }
 
-    public void addAttachments(String...attachments) {
+    public void addAttachments(String... attachments) {
         this.attachments.addAll(Arrays.asList(attachments));
     }
 
@@ -256,24 +208,16 @@ public class BackgroundMail {
         if (TextUtils.isEmpty(subject)) {
             throw new IllegalArgumentException("You didn't set a subject");
         }
-        if (!Utils.isNetworkAvailable(mContext)) {
-            Log.d(TAG, "you need internet connection to send the email");
-        }
+
         new SendEmailTask().execute();
     }
 
     public class SendEmailTask extends AsyncTask<String, Void, Boolean> {
-        private ProgressDialog progressDialog;
+
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-            if (processVisibility) {
-                progressDialog = new ProgressDialog(mContext);
-                progressDialog.setMessage(sendingMessage);
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            }
+
         }
 
         @Override
@@ -298,22 +242,13 @@ public class BackgroundMail {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if (processVisibility) {
-                progressDialog.dismiss();
-                if (result) {
-                    if (!TextUtils.isEmpty(sendingMessageSuccess)) {
-                        Toast.makeText(mContext, sendingMessageSuccess, Toast.LENGTH_SHORT).show();
-                    }
-                    if (onSuccessCallback != null) {
-                        onSuccessCallback.onSuccess();
-                    }
-                }else {
-                    if (!TextUtils.isEmpty(sendingMessageError)) {
-                        Toast.makeText(mContext, sendingMessageError, Toast.LENGTH_SHORT).show();
-                    }
-                    if (onFailCallback != null) {
-                        onFailCallback.onFail();
-                    }
+            if (result) {
+                if (onSuccessCallback != null) {
+                    onSuccessCallback.onSuccess();
+                }
+            } else {
+                if (onFailCallback != null) {
+                    onFailCallback.onFail();
                 }
             }
         }
@@ -339,7 +274,7 @@ public class BackgroundMail {
             this.context = context;
             this.sendingMessage = context.getString(R.string.msg_sending_email);
             this.sendingMessageSuccess = context.getString(R.string.msg_email_sent_successfully);
-            this.sendingMessageError=context.getString(R.string.msg_error_sending_email);
+            this.sendingMessageError = context.getString(R.string.msg_error_sending_email);
         }
 
         public Builder withUsername(@NonNull String username) {
@@ -408,7 +343,7 @@ public class BackgroundMail {
             return this;
         }
 
-        public Builder withAttachments(String...attachments) {
+        public Builder withAttachments(String... attachments) {
             this.attachments.addAll(Arrays.asList(attachments));
             return this;
         }

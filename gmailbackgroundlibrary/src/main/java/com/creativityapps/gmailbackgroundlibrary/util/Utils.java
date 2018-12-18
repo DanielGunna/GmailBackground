@@ -22,12 +22,6 @@ public class Utils {
     private static final String TAG = "BackgroundMailLibrary";
     private static String cryptoPass = "Thi$IsMyhAsH";
 
-    public static boolean isNetworkAvailable(Context context) {
-        return ((ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE))
-                .getActiveNetworkInfo() != null;
-    }
-
     public static String encryptIt(String value) {
         try {
             DESKeySpec keySpec = new DESKeySpec(cryptoPass.getBytes("UTF8"));
