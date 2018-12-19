@@ -67,12 +67,8 @@ public class BackgroundMail {
         setOnFailCallback(builder.onFailCallback);
     }
 
-    public static Builder newBuilder(Context context) {
-        return new Builder(context);
-    }
-
-    public static Builder newBuilder(Fragment fragment) {
-        return new Builder(fragment.getActivity().getApplicationContext());
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     public void setGmailUserName(@NonNull String string) {
@@ -255,7 +251,7 @@ public class BackgroundMail {
     }
 
     public static final class Builder {
-        private Context context;
+
         private String username;
         private String password;
         private String mailto;
@@ -270,11 +266,8 @@ public class BackgroundMail {
         private OnSuccessCallback onSuccessCallback;
         private OnFailCallback onFailCallback;
 
-        private Builder(Context context) {
-            this.context = context;
-            this.sendingMessage = context.getString(R.string.msg_sending_email);
-            this.sendingMessageSuccess = context.getString(R.string.msg_email_sent_successfully);
-            this.sendingMessageError = context.getString(R.string.msg_error_sending_email);
+        private Builder() {
+
         }
 
         public Builder withUsername(@NonNull String username) {
@@ -282,40 +275,24 @@ public class BackgroundMail {
             return this;
         }
 
-        public Builder withUsername(@StringRes int usernameRes) {
-            this.username = context.getResources().getString(usernameRes);
-            return this;
-        }
 
         public Builder withPassword(@NonNull String password) {
             this.password = password;
             return this;
         }
 
-        public Builder withPassword(@StringRes int passwordRes) {
-            this.password = context.getResources().getString(passwordRes);
-            return this;
-        }
 
         public Builder withMailto(@NonNull String mailto) {
             this.mailto = mailto;
             return this;
         }
 
-        public Builder withMailto(@StringRes int mailtoRes) {
-            this.mailto = context.getResources().getString(mailtoRes);
-            return this;
-        }
 
         public Builder withSubject(@NonNull String subject) {
             this.subject = subject;
             return this;
         }
 
-        public Builder withSubject(@StringRes int subjectRes) {
-            this.subject = context.getResources().getString(subjectRes);
-            return this;
-        }
 
         //set email mime type
         public Builder withType(@NonNull String type) {
@@ -323,20 +300,12 @@ public class BackgroundMail {
             return this;
         }
 
-        public Builder withType(@StringRes int typeRes) {
-            this.type = context.getResources().getString(typeRes);
-            return this;
-        }
 
         public Builder withBody(@NonNull String body) {
             this.body = body;
             return this;
         }
 
-        public Builder withBody(@StringRes int bodyRes) {
-            this.body = context.getResources().getString(bodyRes);
-            return this;
-        }
 
         public Builder withAttachments(@NonNull ArrayList<String> attachments) {
             this.attachments.addAll(attachments);
@@ -348,40 +317,24 @@ public class BackgroundMail {
             return this;
         }
 
-        public Builder withAttachments(@ArrayRes int attachmentsRes) {
-            this.attachments.addAll(Arrays.asList(context.getResources().getStringArray(attachmentsRes)));
-            return this;
-        }
 
         public Builder withSendingMessage(@NonNull String sendingMessage) {
             this.sendingMessage = sendingMessage;
             return this;
         }
 
-        public Builder withSendingMessage(@StringRes int sendingMessageRes) {
-            this.sendingMessage = context.getResources().getString(sendingMessageRes);
-            return this;
-        }
 
         public Builder withSendingMessageSuccess(@Nullable String sendingMessageSuccess) {
             this.sendingMessageSuccess = sendingMessageSuccess;
             return this;
         }
 
-        public Builder withSendingMessageSuccess(@StringRes int sendingMessageSuccessRes) {
-            this.sendingMessageSuccess = context.getResources().getString(sendingMessageSuccessRes);
-            return this;
-        }
 
         public Builder withSendingMessageError(@Nullable String sendingMessageError) {
             this.sendingMessageError = sendingMessageError;
             return this;
         }
 
-        public Builder withSendingMessageError(@StringRes int sendingMessageError) {
-            this.sendingMessageError = context.getResources().getString(sendingMessageError);
-            return this;
-        }
 
         public Builder withProcessVisibility(boolean processVisibility) {
             this.processVisibility = processVisibility;
